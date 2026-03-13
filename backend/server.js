@@ -11,6 +11,9 @@ app.use(express.json());
 const dashboardRoutes = require("./routes/dashboardRoutes");
 app.use("/api", dashboardRoutes);
 
+const barangRoutes = require("./routes/barangRoutes");
+app.use("/api", barangRoutes);                        
+
 // port dari .env
 const PORT = process.env.PORT || 5000;
 

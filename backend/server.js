@@ -20,3 +20,12 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+
+const transaksiRoutes = require('./routes/transaksiRoutes');
+// Gunakan route
+app.use('/api/transaksi', transaksiRoutes);
+
+app.listen(3000, () => {
+    console.log('Server iGudang running on port 3000');
+});

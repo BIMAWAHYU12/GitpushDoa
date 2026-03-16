@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const transaksiController = require('../controllers/transaksiController');
+const transaksiController = require('../controllers/transaksiControllers');
 
 // Endpoint untuk mendapatkan semua riwayat
 router.get('/riwayat', transaksiController.getRiwayatTransaksi);

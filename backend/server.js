@@ -22,10 +22,7 @@ app.listen(PORT, () => {
 });
 
 
-const transaksiRoutes = require('./routes/transaksiRoutes');
-// Gunakan route
-app.use('/api/transaksi', transaksiRoutes);
+const riwayatRoutes = require('./routes/riwayatRoutes');
 
-app.listen(3000, () => {
-    console.log('Server iGudang running on port 3000');
-});
+// Gunakan prefix /api/riwayat
+app.use('/api/riwayat', riwayatRoutes);

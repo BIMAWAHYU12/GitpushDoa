@@ -26,3 +26,8 @@ const riwayatRoutes = require('./routes/riwayatRoutes');
 
 // Gunakan prefix /api/riwayat
 app.use('/api/riwayat', riwayatRoutes);
+
+
+const transaksiRoutes = require('./routes/transaksiRoutes');
+// Gunakan prefix /api/transaksi
+app.use('/api/transaksi', transaksiRoutes);

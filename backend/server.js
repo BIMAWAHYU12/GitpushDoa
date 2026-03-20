@@ -7,19 +7,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ROUTES
+// ===== ROUTES =====
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const barangRoutes = require("./routes/barangRoutes");
 const transaksiRoutes = require("./routes/transaksiRoutes");
 
-// GUNAKAN PREFIX /api
+// gunakan semua route
 app.use("/api", dashboardRoutes);
 app.use("/api", barangRoutes);
-app.use("/api", transaksiRoutes);
+app.use("/api/transaksi", transaksiRoutes);
 
-// PORT (cukup satu aja)
-const PORT = process.env.PORT || 3000;
+// ===== PORT =====
+const PORT = process.env.PORT || 5000;
 
+// cukup 1 server aja
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

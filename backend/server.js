@@ -14,6 +14,7 @@ const transaksiRoutes = require("./routes/transaksiRoutes");
 const riwayatRoutes = require('./routes/riwayatRoutes');
 
 app.use('/api/riwayat', riwayatRoutes);
+// gunakan semua route
 app.use("/api", dashboardRoutes);
 app.use("/api", barangRoutes);
 app.use("/api/transaksi", transaksiRoutes);

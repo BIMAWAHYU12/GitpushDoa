@@ -4,7 +4,7 @@ import MainLayout from "./layout/MainLayout";
 // --- 📂 IMPORT PAGES ---
 import Login from "./pages/Login"; 
 import Transaksi from "./pages/Transaksi"; 
-
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -19,6 +19,13 @@ function App() {
         <Route path="/transaksi" element={
           <MainLayout>
             <Transaksi />
+          </MainLayout>
+        } />
+      
+        {/* --- TRANSAKSI BARANG (Mutasi Stok) --- */}
+        <Route path="/dashboard" element={
+          <MainLayout>
+            <Dashboard />
           </MainLayout>
         } />
       

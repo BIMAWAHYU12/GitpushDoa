@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "./layout/MainLayout";
+
+// --- 📂 IMPORT PAGES ---
+import Login from "./pages/Login"; 
+import Transaksi from "./pages/Transaksi"; 
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Router>
+      <Routes>
+        
+        {/* 1️⃣ AUTHENTICATION: Jalur Login (Tanpa Sidebar) */}
+        <Route path="/login" element={<Login />} />
+        
+        
+        {/* --- TRANSAKSI BARANG (Mutasi Stok) --- */}
+        <Route path="/transaksi" element={
+          <MainLayout>
+            <Transaksi />
+          </MainLayout>
+        } />
+      
+
+        {/* 3️⃣ ROUTING LOGIC: Pengalihan Alamat */}
+        
+        {/* Redirect root (/) ke Login */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        
+        {/* Redirect alamat ngasal ke Dashboard */}
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

@@ -5,6 +5,7 @@ import MainLayout from "./layout/MainLayout";
 import Login from "./pages/Login"; 
 import Transaksi from "./pages/Transaksi"; 
 import Dashboard from "./pages/Dashboard";
+import Barang from "./pages/Barang";
 
 function App() {
   return (
@@ -26,6 +27,13 @@ function App() {
         <Route path="/dashboard" element={
           <MainLayout>
             <Dashboard />
+          </MainLayout>
+        } />
+
+        {/* --- TRANSAKSI BARANG (Mutasi Stok) --- */}
+        <Route path="/barang" element={
+          <MainLayout>
+            <Barang />
           </MainLayout>
         } />
       

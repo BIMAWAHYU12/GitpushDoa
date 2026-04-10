@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Transaksi from "./pages/Transaksi"; 
 import Dashboard from "./pages/Dashboard";
 import Barang from "./pages/Barang";
+import Riwayat from "./pages/Riwayat";
 
 function App() {
   return (
@@ -34,6 +35,12 @@ function App() {
         <Route path="/barang" element={
           <MainLayout>
             <Barang />
+          </MainLayout>
+        } />
+        {/* --- TRANSAKSI BARANG (Mutasi Stok) --- */}
+        <Route path="/riwayat" element={
+          <MainLayout>
+            <Riwayat />
           </MainLayout>
         } />
       

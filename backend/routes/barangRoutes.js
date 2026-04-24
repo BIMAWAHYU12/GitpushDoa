@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const upload = require("../middleware/uploadMiddleware"); // Middleware Multer
 
 // BARANG
 const {
-  getBarang,
+  getAllBarang, // Kita sesuaikan nama fungsinya dengan controller terbaru
   createBarang,
   updateBarang,
   deleteBarang,
@@ -27,9 +28,15 @@ const {
 
 
 // ===== BARANG =====
-router.get("/barang", getBarang);
-router.post("/barang", createBarang);
-router.put("/barang/:id", updateBarang);
+// Gunakan getAllBarang untuk dapet data Join (Nama Rak/Kategori) & URL Gambar
+router.get("/barang", getAllBarang);
+
+// Tambahkan middleware 'upload.single' untuk menghandle file gambar
+router.post("/barang", upload.single('gambar'), createBarang);
+
+// PUT juga dikasih upload.single biar user bisa ganti foto pas edit barang
+router.put("/barang/:id", upload.single('gambar'), updateBarang);
+
 router.delete("/barang/:id", deleteBarang);
 
 

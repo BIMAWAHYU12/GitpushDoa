@@ -1,7 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-
-// --- 📂 IMPORT PAGES ---
 import Login from "./pages/Login"; 
 import Transaksi from "./pages/Transaksi"; 
 import Dashboard from "./pages/Dashboard";
@@ -13,8 +11,7 @@ function App() {
     <Router>
       <Routes>
         
-        {/* 1️⃣ AUTHENTICATION: Jalur Login (Tanpa Sidebar) */}
-        <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login />} />
         
         
         {/* --- TRANSAKSI BARANG (Mutasi Stok) --- */}
@@ -45,7 +42,6 @@ function App() {
         } />
       
 
-        {/* 3️⃣ ROUTING LOGIC: Pengalihan Alamat */}
         
         {/* Redirect root (/) ke Login */}
         <Route path="/" element={<Navigate to="/login" />} />

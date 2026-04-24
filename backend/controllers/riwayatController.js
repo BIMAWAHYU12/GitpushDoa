@@ -1,7 +1,7 @@
 const db = require('../config/db');
 
 // Mengambil riwayat transaksi lengkap dengan JOIN multi-tabel
-const getRiwayatLengkap = (req, res) => {
+const getRiwayatLengkap = async (req, res) => {
     const sql = `
         SELECT 
             t.id_transaksi,
@@ -21,18 +21,19 @@ const getRiwayatLengkap = (req, res) => {
         ORDER BY t.tanggal DESC
     `;
 
-    db.query(sql, (err, results) => {
-        if (err) {
-            return res.status(500).json({ 
-                message: "Gagal mengambil data riwayat", 
-                error: err.message 
-            });
-        }
+    try {
+        const [results] = await db.query(sql);
         res.json({
             status: "Success",
             data: results
         });
-    });
+    } catch (err) {
+        console.error("[RIWAYAT ERROR]:", err.message);
+        res.status(500).json({ 
+            message: "Gagal mengambil data riwayat", 
+            error: err.message 
+        });
+    }
 };
 
 module.exports = { getRiwayatLengkap };

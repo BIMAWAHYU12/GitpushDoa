@@ -4,11 +4,7 @@ const upload = require("../middleware/uploadMiddleware"); // Middleware Multer
 
 // BARANG
 const {
-<<<<<<< HEAD
   getAllBarang, // Kita sesuaikan nama fungsinya dengan controller terbaru
-=======
-  getAllBarang, // sesuaikan nama fungsinya dengan controller terbaru
->>>>>>> 86e80d8 (bima memmperbaiki API dan eror handling)
   createBarang,
   updateBarang,
   deleteBarang,
@@ -32,7 +28,6 @@ const {
 
 
 // ===== BARANG =====
-<<<<<<< HEAD
 // Gunakan getAllBarang untuk dapet data Join (Nama Rak/Kategori) & URL Gambar
 router.get("/barang", getAllBarang);
 
@@ -40,12 +35,6 @@ router.get("/barang", getAllBarang);
 router.post("/barang", upload.single('gambar'), createBarang);
 
 // PUT juga dikasih upload.single biar user bisa ganti foto pas edit barang
-=======
-router.get("/barang", getAllBarang);
-
-router.post("/barang", upload.single('gambar'), createBarang);
-
->>>>>>> 86e80d8 (bima memmperbaiki API dan eror handling)
 router.put("/barang/:id", upload.single('gambar'), updateBarang);
 
 router.delete("/barang/:id", deleteBarang);

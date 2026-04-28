@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-exports.getDashboard = async (req, res) => { // Tambahin 'async'
+exports.getDashboard = async (req, res) => {
   const query = `
     SELECT 
       (SELECT COUNT(*) FROM barang) AS total_barang,
@@ -11,17 +11,22 @@ exports.getDashboard = async (req, res) => { // Tambahin 'async'
   `;
 
   try {
-    // Pake await karena db.js pake .promise()
-    // Hasilnya kita pecah (destructure) jadi [result]
     const [result] = await db.query(query);
+
+    const data = result?.[0] || {};
 
     res.status(200).json({
       message: "Dashboard data berhasil diambil",
-      data: result[0],
+      data: {
+        total_barang: data.total_barang || 0,
+        total_kategori: data.total_kategori || 0,
+        total_transaksi: data.total_transaksi || 0,
+        total_outlet: data.total_outlet || 0,
+        total_supplier: data.total_supplier || 0,
+      },
     });
 
   } catch (err) {
-    // Error handling buat jaga-jaga kalau ada tabel yang belum dibuat
     console.error("[DASHBOARD ERROR]:", err.message);
     res.status(500).json({ 
       error: "Gagal mengambil data dashboard",

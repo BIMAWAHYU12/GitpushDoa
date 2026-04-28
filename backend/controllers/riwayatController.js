@@ -1,6 +1,5 @@
 const db = require('../config/db');
 
-// Mengambil riwayat transaksi lengkap dengan JOIN multi-tabel
 const getRiwayatLengkap = async (req, res) => {
     const sql = `
         SELECT 
@@ -11,8 +10,8 @@ const getRiwayatLengkap = async (req, res) => {
             t.keterangan,
             b.nama AS nama_barang,
             u.username AS nama_petugas,
-            s.nama_supplier AS asal_supplier,
-            o.nama_outlet AS tujuan_outlet
+            COALESCE(s.nama_supplier, '-') AS asal_supplier,
+            COALESCE(o.nama_outlet, '-') AS tujuan_outlet
         FROM transaksi_stok t
         JOIN barang b ON t.id_barang = b.id_barang
         JOIN users u ON t.id_user = u.id_user
@@ -23,10 +22,13 @@ const getRiwayatLengkap = async (req, res) => {
 
     try {
         const [results] = await db.query(sql);
-        res.json({
+
+        res.status(200).json({
             status: "Success",
+            total: results.length,
             data: results
         });
+
     } catch (err) {
         console.error("[RIWAYAT ERROR]:", err.message);
         res.status(500).json({ 

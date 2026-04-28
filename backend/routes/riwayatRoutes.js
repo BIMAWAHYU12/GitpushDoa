@@ -1,8 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const riwayatController = require('../controllers/riwayatController');
 
-// Endpoint utama untuk tabel riwayat di Frontend
-router.get('/lengkap', riwayatController.getRiwayatLengkap);
+const { verifyToken } = require("../middleware/authMiddleware");
+const { getRiwayatLengkap } = require("../controllers/riwayatController");
+
+router.get("/", verifyToken, getRiwayatLengkap);
 
 module.exports = router;

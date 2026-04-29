@@ -1,30 +1,33 @@
 const multer = require('multer');
 const path = require('path');
 
-// Atur penyimpanan
+// STORAGE
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        // Format: 1713800000-namafile.jpg
-        cb(null, Date.now() + path.extname(file.originalname));
+        const uniqueName = Date.now() + '-' + file.originalname.replace(/\s+/g, '_');
+        cb(null, uniqueName);
     }
 });
 
-// Filter file (hanya gambar)
+// VALIDASI FILE
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+    if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Hanya file gambar yang diperbolehkan!'), false);
+        cb(new Error('Format file harus JPG/JPEG/PNG'), false);
     }
 };
 
+// MULTER CONFIG
 const upload = multer({ 
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 2 * 1024 * 1024 } // Batas 2MB
+    storage,
+    fileFilter,
+    limits: { fileSize: 2 * 1024 * 1024 } // 2MB
 });
 
 module.exports = upload;

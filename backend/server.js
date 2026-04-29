@@ -32,24 +32,32 @@ const seedUsers = async () => {
 };
 
 seedUsers();
+
 // --- ROUTES ---
 const authRoutes = require("./routes/auth");
 app.use("/api/auth", authRoutes);
+
 // --- ROUTES ---
-const dashboardRoutes = require("./routes/dashboardRoutes"); // 1. Import rute dashboard
-app.use("/api", dashboardRoutes); 
+const dashboardRoutes = require("./routes/dashboardRoutes");
+app.use("/api", dashboardRoutes);
 
-const masterRoutes = require("./routes/barangRoutes"); // import route master data
-app.use("/api", masterRoutes);
+// ✅ FIX DI SINI (dipisah sesuai konsep)
+const barangRoutes = require("./routes/barangRoutes");
+app.use("/api/barang", barangRoutes);
 
-const transaksiRoutes = require("./routes/transaksiRoutes"); // 1. Import rute transaksi baru
-app.use("/api", transaksiRoutes); // 2. Daftarkan rute transaksi
+const masterRoutes = require("./routes/masterRoutes");
+app.use("/api/master", masterRoutes);
+
+// --- TRANSAKSI ---
+const transaksiRoutes = require("./routes/transaksiRoutes");
+app.use("/api", transaksiRoutes);
 
 // Biar folder foto bisa diakses lewat URL browser/img tag
 app.use('/uploads', express.static('uploads'));
 
-const riwayatRoutes = require('./routes/riwayatRoutes'); //riwayat
-app.use('/api/riwayat', riwayatRoutes); 
+// --- RIWAYAT ---
+const riwayatRoutes = require('./routes/riwayatRoutes');
+app.use('/api/riwayat', riwayatRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

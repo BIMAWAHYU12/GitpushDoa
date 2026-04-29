@@ -1,14 +1,20 @@
 const db = require('../config/db');
 
 const createTransaksi = async (req, res) => {
-    // 1. Destructuring & Parsing data
     const { id_barang, tipe, jumlah, keterangan, id_user, id_supplier, id_outlet } = req.body;
-    const qty = parseInt(jumlah); 
+    
+    const qty = parseInt(jumlah);
 
-    if (qty <= 0) return res.status(400).json({ message: "Jumlah harus lebih dari 0!" });
-    // 2. Validasi awal (Client Error)
-    if (!id_barang || !tipe || isNaN(qty) || !id_user) {
+    if (isNaN(qty) || qty <= 0) {
+        return res.status(400).json({ message: "Jumlah harus angka dan lebih dari 0!" });
+    }
+
+    if (!id_barang || !tipe || !id_user) {
         return res.status(400).json({ message: "Data utama wajib diisi dengan benar!" });
+    }
+
+    if (!['IN', 'OUT'].includes(tipe)) {
+        return res.status(400).json({ message: "Tipe transaksi harus IN atau OUT!" });
     }
 
     const connection = await db.getConnection();
@@ -16,7 +22,6 @@ const createTransaksi = async (req, res) => {
     try {
         await connection.beginTransaction();
 
-        // 3. CEK: Apakah barangnya ada? (Kolom disesuaikan: 'nama')
         const [cekBarang] = await connection.query(
             "SELECT nama, stok, gambar FROM barang WHERE id_barang = ?", 
             [id_barang]
@@ -29,7 +34,6 @@ const createTransaksi = async (req, res) => {
         const namaBarang = cekBarang[0].nama;
         const stokSekarang = cekBarang[0].stok;
 
-        // 4. Logic Bisnis: IN (Supplier) / OUT (Outlet & Cek Stok)
         if (tipe === 'IN' && !id_supplier) {
             throw new Error("Barang MASUK wajib mencantumkan Supplier!");
         }
@@ -42,7 +46,6 @@ const createTransaksi = async (req, res) => {
             }
         }
 
-        // 5. INSERT ke tabel transaksi_stok
         const sqlInsert = `INSERT INTO transaksi_stok 
             (id_barang, tipe, jumlah, keterangan, id_user, id_supplier, id_outlet, tanggal) 
             VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`;
@@ -55,14 +58,12 @@ const createTransaksi = async (req, res) => {
 
         await connection.query(sqlInsert, values);
 
-        // 6. UPDATE Stok di tabel barang
         const sqlUpdateStok = tipe === 'IN' 
             ? "UPDATE barang SET stok = stok + ? WHERE id_barang = ?" 
             : "UPDATE barang SET stok = stok - ? WHERE id_barang = ?";
 
         await connection.query(sqlUpdateStok, [qty, id_barang]);
 
-        // 7. COMMIT (Simpan Permanen)
         await connection.commit();
 
         res.status(201).json({ 
@@ -76,22 +77,22 @@ const createTransaksi = async (req, res) => {
         });
 
     } catch (err) {
-    await connection.rollback();
-    console.error("[TRANSAKSI ERROR]:", err.message);
+        await connection.rollback();
+        console.error("[TRANSAKSI ERROR]:", err.message);
 
-    // Cek kalau error-nya karena Foreign Key
-    let pesanCustom = err.message;
-    if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-        pesanCustom = "Gagal: ID Supplier atau ID Outlet tidak ditemukan di database!";
-    }
+        let pesanCustom = err.message;
+        if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+            pesanCustom = "Gagal: ID Supplier atau ID Outlet tidak ditemukan di database!";
+        }
 
-    res.status(400).json({ 
-        message: "Transaksi Gagal", 
-        error: pesanCustom 
-    });
+        const statusCode = err.code ? 400 : 500;
+
+        res.status(statusCode).json({ 
+            message: "Transaksi Gagal", 
+            error: pesanCustom 
+        });
 
     } finally {
-        // Lepas koneksi kembali ke pool
         connection.release();
     }
 };

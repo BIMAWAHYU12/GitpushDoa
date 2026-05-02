@@ -65,10 +65,8 @@ const createBarang = async (req, res) => {
 // 3. Update Barang
 const updateBarang = async (req, res) => {
     const { id } = req.params;
-    const { nama, kategori_id, rak_id, stok, harga } = req.body;
-
+    const { nama, kategori_id, rak_id, stok } = req.body; 
     try {
-        // cek barang + ambil data lama
         const [cek] = await db.query(
             "SELECT * FROM barang WHERE id_barang = ?",
             [id]
@@ -80,16 +78,12 @@ const updateBarang = async (req, res) => {
 
         const barangLama = cek[0];
 
-        // validasi wajib
         if (!nama || !kategori_id || !rak_id) {
             return res.status(400).json({ message: "Data tidak lengkap" });
         }
 
-        // amankan nilai (kalau tidak dikirim, pakai data lama)
         const stokFinal = stok !== undefined ? stok : barangLama.stok;
-        const hargaFinal = harga !== undefined ? harga : barangLama.harga;
 
-        // validasi stok
         if (stokFinal < 0) {
             return res.status(400).json({ message: "Stok tidak boleh minus" });
         }
@@ -97,7 +91,6 @@ const updateBarang = async (req, res) => {
         let query, params;
 
         if (req.file) {
-            // hapus gambar lama
             if (barangLama.gambar) {
                 const oldPath = path.join(__dirname, "../uploads/", barangLama.gambar);
                 if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
@@ -105,36 +98,20 @@ const updateBarang = async (req, res) => {
 
             query = `
                 UPDATE barang 
-                SET nama=?, kategori_id=?, rak_id=?, stok=?, harga=?, gambar=? 
+                SET nama=?, kategori_id=?, rak_id=?, stok=?, gambar=? 
                 WHERE id_barang=?
             `;
-            params = [
-                nama,
-                kategori_id,
-                rak_id,
-                stokFinal,
-                hargaFinal,
-                req.file.filename,
-                id
-            ];
+            params = [nama, kategori_id, rak_id, stokFinal, req.file.filename, id];
         } else {
             query = `
                 UPDATE barang 
-                SET nama=?, kategori_id=?, rak_id=?, stok=?, harga=? 
+                SET nama=?, kategori_id=?, rak_id=?, stok=? 
                 WHERE id_barang=?
             `;
-            params = [
-                nama,
-                kategori_id,
-                rak_id,
-                stokFinal,
-                hargaFinal,
-                id
-            ];
+            params = [nama, kategori_id, rak_id, stokFinal, id];
         }
 
         await db.query(query, params);
-
         res.json({ message: "Barang berhasil diupdate!" });
 
     } catch (err) {
@@ -159,7 +136,6 @@ const deleteBarang = async (req, res) => {
         }
 
         await db.query("DELETE FROM barang WHERE id_barang = ?", [id]);
-        
         res.json({ message: "Barang berhasil dihapus!" });
 
     } catch (err) {

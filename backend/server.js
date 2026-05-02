@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs"); // Untuk nge-hash password otomatis
-const db = require("./config/db"); // Import koneksi db lu
+const db = require("./config/db"); // Import koneksi db
+const multer = require("multer"); 
 require("dotenv").config();
 
 const app = express();
@@ -50,14 +51,30 @@ app.use("/api/master", masterRoutes);
 
 // --- TRANSAKSI ---
 const transaksiRoutes = require("./routes/transaksiRoutes");
-app.use("/api", transaksiRoutes);
+app.use("/api/transaksi", transaksiRoutes);
 
-// Biar folder foto bisa diakses lewat URL browser/img tag
 app.use('/uploads', express.static('uploads'));
 
 // --- RIWAYAT ---
 const riwayatRoutes = require('./routes/riwayatRoutes');
 app.use('/api/riwayat', riwayatRoutes);
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ message: `Upload Error: ${err.message}` });
+  }
+
+  if (err.message === 'Format file harus JPG/JPEG/PNG') {
+    return res.status(400).json({ message: err.message });
+  }
+
+  // Error internal lainnya
+  console.error(err.stack);
+  res.status(500).json({ 
+    message: "Terjadi kesalahan pada server", 
+    error: err.message 
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

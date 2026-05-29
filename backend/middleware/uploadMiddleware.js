@@ -19,7 +19,7 @@ const fileFilter = (req, file, cb) => {
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Format file harus JPG/JPEG/PNG'), false);
+        cb(new Error('Format file harus JPG/JPEGf/PNG'), false);
     }
 };
 

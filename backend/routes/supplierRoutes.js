@@ -1,14 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
+const { getSupplier, createSupplier, updateSupplier, deleteSupplier } = require("../controllers/supplierController");
 
-const {
-  getSupplier,
-  createSupplier,
-  updateSupplier,
-  deleteSupplier
-} = require("../controllers/masterController");
-
+// Jalur Eksklusif Master Supplier
 router.get("/", verifyToken, getSupplier);
 router.post("/", verifyToken, isAdmin, createSupplier);
 router.put("/:id", verifyToken, isAdmin, updateSupplier);

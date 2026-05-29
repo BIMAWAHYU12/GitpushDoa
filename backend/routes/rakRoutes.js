@@ -1,14 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
+const { getRak, createRak, updateRak, deleteRak } = require("../controllers/rakController");
 
-const {
-  getRak,
-  createRak,
-  updateRak,
-  deleteRak
-} = require("../controllers/masterController");
-
+// Jalur Eksklusif Master Rak
 router.get("/", verifyToken, getRak);
 router.post("/", verifyToken, isAdmin, createRak);
 router.put("/:id", verifyToken, isAdmin, updateRak);

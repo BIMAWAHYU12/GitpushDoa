@@ -2,22 +2,54 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  // State diubah dari email ke username biar lebih taktis buat admin gudang
+  // State Input Form
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  
+  // State Handling API Connection
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
     
-    // Logic Simulasi Login
-    // Kita set role Admin di localStorage biar menu Inventory Control kebuka
-    console.log("Authenticating User:", username);
-    localStorage.setItem('user_role', 'Admin'); 
-    localStorage.setItem('isLoggedIn', 'true');
-    
-    // Redirect ke Dashboard setelah login berhasil
-    navigate('/dashboard');
+    try {
+      // Tembak langsung ke Endpoint Backend Node.js lu
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const result = await response.json();
+
+      // Jika status code bukan 200 (misal: 400, 401, 500)
+      if (!response.ok) {
+        throw new Error(result.message || 'Login gagal, periksa jaringan Anda!');
+      }
+
+      // 🔥 AMBIL DATA ASLI DARI BACKEND & SIMPAN KE LOCALSTORAGE
+      localStorage.setItem('token', result.token); 
+      localStorage.setItem('user_role', result.user.role); // Otomatis 'admin' / 'staff' sesuai DB
+      localStorage.setItem('username', result.user.username);
+      localStorage.setItem('isLoggedIn', 'true');
+      
+      console.log("[FRONTEND LOG]: Login Sukses, Token disimpan.");
+      
+      // Redirect ke halaman Dashboard utama
+      navigate('/dashboard');
+    } catch (err) {
+      // Tampilkan pesan error dari backend ke komponen UI
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -42,6 +74,13 @@ const Login = () => {
           </p>
         </div>
 
+        {/* ⚠️ ALERT BOX: Muncul otomatis jika username/password salah */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-2xl text-xs font-bold text-center animate-shake">
+            ⚠️ {error}
+          </div>
+        )}
+
         {/* FORM LOGIN */}
         <form onSubmit={handleLogin} className="space-y-7">
           
@@ -55,7 +94,8 @@ const Login = () => {
               <input 
                 type="text" 
                 required
-                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 text-sm font-bold text-slate-700 placeholder:text-slate-300"
+                disabled={isLoading}
+                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 text-sm font-bold text-slate-700 placeholder:text-slate-300 disabled:opacity-50"
                 placeholder="Masukkan Username..."
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -73,7 +113,8 @@ const Login = () => {
               <input 
                 type="password" 
                 required
-                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 text-sm font-medium text-slate-700 placeholder:text-slate-300"
+                disabled={isLoading}
+                className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border border-slate-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 text-sm font-medium text-slate-700 placeholder:text-slate-300 disabled:opacity-50"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -94,12 +135,17 @@ const Login = () => {
             <a href="#" className="text-[12px] font-black text-emerald-600 hover:text-blue-700 transition-colors tracking-wide">Bantuan Akses?</a>
           </div>
 
-          {/* BUTTON SUBMIT: Gradasi Vibrant */}
+          {/* BUTTON SUBMIT: Gradasi Vibrant dengan Status Loading */}
           <button 
             type="submit"
-            className="w-full py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 hover:scale-[1.02] active:scale-[0.98] text-white rounded-2xl font-black text-[12px] tracking-[0.3em] shadow-xl shadow-emerald-500/30 transition-all duration-500 uppercase mt-4"
+            disabled={isLoading}
+            className="w-full py-5 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-600 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 text-white rounded-2xl font-black text-[12px] tracking-[0.3em] shadow-xl shadow-emerald-500/30 transition-all duration-500 uppercase mt-4 flex items-center justify-center gap-2"
           >
-            Authenticate Access
+            {isLoading ? (
+              <span>AUTHENTICATING...</span>
+            ) : (
+              <span>AUTHENTICATE ACCESS</span>
+            )}
           </button>
         </form>
 

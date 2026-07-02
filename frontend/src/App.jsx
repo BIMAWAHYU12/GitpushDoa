@@ -6,7 +6,10 @@ import Dashboard from "./pages/Dashboard";
 import Barang from "./pages/Barang";
 import Riwayat from "./pages/Riwayat";
 import DataOutlet from "./pages/DataOutlet"; 
-import TentangKami from "./pages/TentangKami"; // 🔥 1. IMPORT HALAMAN TENTANG KAMI DI SINI Dhika
+import TentangKami from "./pages/TentangKami"; 
+import Gudanginfo from "./pages/Gudanginfo"; 
+import UserManagement from "./pages/UserManagement"; 
+// 🔥 1. IMPORT HALAMAN TENTANG KAMI DI SINI Dhika
 
 function App() {
   return (
@@ -55,6 +58,19 @@ function App() {
         <Route path="/tentang-kami" element={
           <MainLayout>
             <TentangKami />
+          </MainLayout>
+        } />
+
+        {/* 🔥 2. DAFTARKAN JALUR RUTENYA DI SINI */}
+        <Route path="/gudanginfo" element={
+          <MainLayout>
+            <Gudanginfo />
+          </MainLayout>
+        } />
+        {/* 🔥 2. DAFTARKAN JALUR RUTENYA DI SINI */}
+        <Route path="/usermanagement" element={
+          <MainLayout>
+            <UserManagement />
           </MainLayout>
         } />
       

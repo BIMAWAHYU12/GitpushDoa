@@ -1,91 +1,84 @@
 const express = require("express");
 const cors = require("cors");
-const bcrypt = require("bcryptjs"); // Untuk nge-hash password otomatis
-const db = require("./config/db"); // Import koneksi db
+const bcrypt = require("bcryptjs");
+const db = require("./config/db");
 const multer = require("multer");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const seedUsers = async () => {
-  const users = [
-    { username: "bima", password: "password123", role: "admin" },
-    { username: "staff_gudang", password: "staff123", role: "staff" },
-  ];
-
-  try {
-    for (const u of users) {
-      const [rows] = await db.query("SELECT * FROM users WHERE username = ?", [
-        u.username,
-      ]);
-      if (rows.length === 0) {
-        const hashedPassword = await bcrypt.hash(u.password, 10);
-        await db.query(
-          "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-          [u.username, hashedPassword, u.role]
-        );
-        console.log(`✅ User ${u.role} otomatis dibuat: ${u.username}`);
+// 1. Middleware Global untuk Update Aktivitas
+app.use(async (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.decode(token);
+      if (decoded && decoded.id) {
+        // Pastikan tabel users memiliki kolom last_seen
+        await db.query("UPDATE users SET last_seen = NOW() WHERE id_user = ?", [decoded.id]);
       }
+    } catch (e) {
+      console.error("Middleware Error:", e.message);
     }
-  } catch (err) {
-    console.error("❌ Gagal seeding users:", err.message);
   }
-};
+  next();
+});
 
-seedUsers();
+// 2. Fungsi Seed User
+// const seedUsers = async () => {
+//   const users = [
+//     { username: "bima", password: "password123", role: "admin" },
+//     { username: "staff_gudang", password: "staff123", role: "staff" },
+//   ];
+//   try {
+//     for (const u of users) {
+//       const [rows] = await db.query("SELECT * FROM users WHERE username = ?", [u.username]);
+//       if (rows.length === 0) {
+//         const hashedPassword = await bcrypt.hash(u.password, 10);
+//         await db.query("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", 
+//                        [u.username, hashedPassword, u.role]);
+//         console.log(`✅ User otomatis dibuat: ${u.username}`);
+//       }
+//     }
+//   } catch (err) {
+//     console.error("❌ Gagal seeding users:", err.message);
+//   }
+// };
+// seedUsers();
 
-// ==================== 🚀 UTILITY & STATIC ROUTES ====================
+// 3. Static Files
 app.use("/uploads", express.static("uploads"));
 
-// ==================== 🛣️ CLEAN ROUTING MODULES ====================
-
-// --- AUTHENTICATION ---
+// 4. Routes (Diimpor dan digunakan hanya SATU KALI)
 const authRoutes = require("./routes/auth");
-app.use("/api/auth", authRoutes);
-
-// --- CORE SYSTEM & LOGISTICS ---
 const dashboardRoutes = require("./routes/dashboardRoutes");
-app.use("/api", dashboardRoutes);
-
 const transaksiRoutes = require("./routes/transaksiRoutes");
-app.use("/api/transaksi", transaksiRoutes);
-
 const riwayatRoutes = require("./routes/riwayatRoutes");
-app.use("/api/riwayat", riwayatRoutes);
-
-
-// --- 🔥 MASTER DATA INDEPENDEN (RESTful Best Practice) ---
-
-// 📦 Jalur Master Barang
 const barangRoutes = require("./routes/barangRoutes");
-app.use("/api/barang", barangRoutes);
-
-// 🏪 Jalur Master Outlet (Membaca file outletRoutes.js baru)
 const outletRoutes = require("./routes/outletRoutes");
-app.use("/api/outlet", outletRoutes);
-
-// 📍 Jalur Master Rak (Membaca file rakRoutes.js baru)
 const rakRoutes = require("./routes/rakRoutes");
-app.use("/api/rak", rakRoutes);
-
-// 🤝 Jalur Master Supplier (Membaca file supplierRoutes.js baru)
 const supplierRoutes = require("./routes/supplierRoutes");
+const userRoutes = require("./routes/userRoutes");
+
+app.use("/api/auth", authRoutes);
+app.use("/api", dashboardRoutes);
+app.use("/api/transaksi", transaksiRoutes);
+app.use("/api/riwayat", riwayatRoutes);
+app.use("/api/barang", barangRoutes);
+app.use("/api/outlet", outletRoutes);
+app.use("/api/rak", rakRoutes);
 app.use("/api/supplier", supplierRoutes);
+app.use("/api/users", userRoutes);
 
-
-// ==================== 🛠️ GLOBAL ERROR HANDLER ====================
+// 5. Global Error Handler (Paling bawah)
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ message: `Upload Error: ${err.message}` });
   }
-
-  if (err.message === "Format file harus JPG/JPEG/PNG") {
-    return res.status(400).json({ message: err.message });
-  }
-
-  // Error internal lainnya
   console.error(err.stack);
   res.status(500).json({
     message: "Terjadi kesalahan pada server",

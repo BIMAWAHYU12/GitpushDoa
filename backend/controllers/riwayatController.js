@@ -8,6 +8,7 @@ const getRiwayatLengkap = async (req, res) => {
             t.tipe,
             t.jumlah,
             t.keterangan,
+            t.bukti_foto, /* 🔥 TYPO FIX: Sebelumnya ts.bukti_foto, sekarang pakai t.bukti_foto */
             b.nama AS nama_barang,
             u.username AS nama_petugas,
             COALESCE(s.nama_supplier, '-') AS asal_supplier,

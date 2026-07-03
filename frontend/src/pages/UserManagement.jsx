@@ -240,7 +240,6 @@ const UserManagement = () => {
             <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">iGUDANG Node & Staff Credentials Panel</p>
           </div>
           
-          {/* 🔥 LOGO / TOMBOL TAMBAH AKUN MINIMALIS */}
           <button 
             onClick={() => setShowAddForm(!showAddForm)}
             className={`w-12 h-12 rounded-full flex items-center justify-center text-sm shadow-md transition-all duration-300 ${showAddForm ? 'bg-rose-500 text-white rotate-45' : 'bg-[#388087] text-white hover:bg-[#2a636b]'}`}
@@ -250,7 +249,6 @@ const UserManagement = () => {
           </button>
         </div>
 
-        {/* 🔥 COLLAPSIBLE FORM: Muncul dengan efek transisi rapi saat logo plus diklik */}
         {showAddForm && (
           <div className="bg-white p-6 rounded-[24px] shadow-md border border-[#BADFE7]/80 animate-fadeIn space-y-4">
             <div className="flex items-center gap-2 border-b pb-3 mb-2">
@@ -269,7 +267,6 @@ const UserManagement = () => {
           </div>
         )}
 
-        {/* LIST & GRAFIK CONTAINER */}
         <div className="space-y-4">
           {users.map(u => {
             const isOnline = checkIsOnline(u.last_seen);
@@ -278,7 +275,6 @@ const UserManagement = () => {
             return (
               <div key={u.id_user} className={`bg-white rounded-[28px] border transition-all duration-300 shadow-sm ${isEditingThisUser ? 'border-[#388087] shadow-md ring-4 ring-[#BADFE7]/20' : 'border-slate-100/70 hover:shadow-md'}`}>
                 
-                {/* PROFIL CARD */}
                 <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-5">
                     <div className="flex flex-col items-center gap-1 shrink-0">
@@ -298,7 +294,6 @@ const UserManagement = () => {
                   </div>
                 </div>
 
-                {/* 🔥 UX UPGRADE: INLINE EDIT FORM (Muncul geser ke bawah saat tombol EDIT diklik) */}
                 {isEditingThisUser && (
                   <div className="mx-6 p-5 bg-slate-50/70 border border-slate-100 rounded-[20px] animate-fadeIn space-y-3 mb-6">
                     <p className="text-[9px] font-black uppercase text-slate-400 tracking-wider"><i className="fas fa-user-gear mr-1"></i> Panel Modifikasi Akun</p>
@@ -316,7 +311,6 @@ const UserManagement = () => {
                   </div>
                 )}
 
-                {/* GRAFIK RUMPUT EKG (Hanya Staff) */}
                 {u.role === 'staff' && (
                   <div className="mx-6 pb-6 pt-4 border-t border-dashed border-slate-100">
                     <div className="flex justify-between items-end mb-4">

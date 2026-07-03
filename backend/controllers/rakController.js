@@ -42,7 +42,6 @@ const updateRak = async (req, res) => {
 const deleteRak = async (req, res) => {
   const { id } = req.params;
   try {
-    // Validasi: Cegah hapus kalau rak masih terisi barang
     const [cek] = await db.query("SELECT COUNT(*) AS total FROM barang WHERE rak_id = ?", [id]);
     if (cek[0].total > 0) return res.status(400).json({ message: "Gagal! Rak masih berisi data barang aktif." });
 

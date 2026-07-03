@@ -18,7 +18,6 @@ app.use(async (req, res, next) => {
       const token = authHeader.split(' ')[1];
       const decoded = jwt.decode(token);
       if (decoded && decoded.id) {
-        // Pastikan tabel users memiliki kolom last_seen
         await db.query("UPDATE users SET last_seen = NOW() WHERE id_user = ?", [decoded.id]);
       }
     } catch (e) {
@@ -53,7 +52,7 @@ app.use(async (req, res, next) => {
 // 3. Static Files
 app.use("/uploads", express.static("uploads"));
 
-// 4. Routes (Diimpor dan digunakan hanya SATU KALI)
+// 4. Routes 
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const transaksiRoutes = require("./routes/transaksiRoutes");
@@ -74,7 +73,7 @@ app.use("/api/rak", rakRoutes);
 app.use("/api/supplier", supplierRoutes);
 app.use("/api/users", userRoutes);
 
-// 5. Global Error Handler (Paling bawah)
+// 5. Global Error Handler 
 app.use((err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     return res.status(400).json({ message: `Upload Error: ${err.message}` });

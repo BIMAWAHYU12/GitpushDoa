@@ -31,7 +31,7 @@ const createOutlet = async (req, res) => {
   }
 };
 
-// 3. Update Outlet (Pengaman File Fisik Ganti Foto & Anti-Crash Eror 500)
+// 3. Update Outlet 
 const updateOutlet = async (req, res) => {
   const { id } = req.params;
   const { nama_outlet, alamat, kontak } = req.body;
@@ -41,16 +41,13 @@ const updateOutlet = async (req, res) => {
   }
 
   try {
-    // Ambil data lama buat ngecek file foto sebelum dihapus fisik
     const [cek] = await db.query("SELECT * FROM outlet WHERE id_outlet = ?", [id]);
     if (cek.length === 0) return res.status(404).json({ message: "Outlet tidak ditemukan" });
     
     const outletLama = cek[0];
     let query, params;
 
-    // JIKA USER UPLOAD FOTO BARU PAS EDIT
     if (req.file) {
-      // Hapus file lama dari folder uploads hanya jika filenya beneran eksis di server
       if (outletLama.gambar && outletLama.gambar !== "NULL") {
         const oldPath = path.join(__dirname, "../uploads/", outletLama.gambar);
         try {
@@ -63,7 +60,6 @@ const updateOutlet = async (req, res) => {
       query = "UPDATE outlet SET nama_outlet = ?, alamat = ?, kontak = ?, gambar = ? WHERE id_outlet = ?";
       params = [nama_outlet, alamat, kontak, req.file.filename, id];
     } else {
-      // JIKA USER HANYA EDIT TEKS TANPA GANTI FOTO
       query = "UPDATE outlet SET nama_outlet = ?, alamat = ?, kontak = ? WHERE id_outlet = ?";
       params = [nama_outlet, alamat, kontak, id];
     }
@@ -75,7 +71,7 @@ const updateOutlet = async (req, res) => {
   }
 };
 
-// 4. Delete Outlet (Hapus Baris Sekaligus File Fotonya)
+// 4. Delete Outlet 
 const deleteOutlet = async (req, res) => {
   const { id } = req.params;
   try {

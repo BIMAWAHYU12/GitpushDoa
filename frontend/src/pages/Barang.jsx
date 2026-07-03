@@ -128,7 +128,11 @@ const DataBarang = () => {
       if (!response.ok)
         throw new Error(result.message || "Gagal memproses data produk");
 
-      alert(isEditMode ? "Barang berhasil diperbarui!" : "Barang baru berhasil ditambahkan!");
+      alert(
+        isEditMode
+          ? "Barang berhasil diperbarui!"
+          : "Barang baru berhasil ditambahkan!"
+      );
       setShowFormModal(false);
       loadInitialData();
     } catch (err) {
@@ -138,7 +142,12 @@ const DataBarang = () => {
 
   // 5. Fungsi Aksi Hapus Barang
   const handleDeleteItem = async (id) => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus aset barang ini dari database gudang?")) return;
+    if (
+      !window.confirm(
+        "Apakah Anda yakin ingin menghapus aset barang ini dari database gudang?"
+      )
+    )
+      return;
 
     try {
       const response = await fetch(`http://localhost:5000/api/barang/${id}`, {
@@ -186,7 +195,6 @@ const DataBarang = () => {
   return (
     // 🔥 LATAR UTAMA TETAP CREAM SATIN (#F6F6F2) SENADA LAYOUT UTAMA
     <div className="w-full space-y-6 animate-fadeIn text-left font-sans bg-[#F6F6F2] min-h-screen pt-2 px-1 text-[#388087]">
-      
       {/* 🚀 HEADER SECTION */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-1">
         <div className="space-y-1">
@@ -194,7 +202,8 @@ const DataBarang = () => {
             Data Barang
           </h1>
           <p className="text-slate-500 font-medium text-sm">
-            Kelola aset logistik dan informasi spesifikasi barang secara real-time.
+            Kelola aset logistik dan informasi spesifikasi barang secara
+            real-time.
           </p>
         </div>
       </div>
@@ -392,7 +401,10 @@ const DataBarang = () => {
                   >
                     <option value="">-- Pilih Kategori --</option>
                     {kategoriList.map((kat) => (
-                      <option key={kat.id_kategori} value={String(kat.id_kategori)}>
+                      <option
+                        key={kat.id_kategori}
+                        value={String(kat.id_kategori)}
+                      >
                         {kat.nama}
                       </option>
                     ))}
@@ -480,7 +492,9 @@ const DataBarang = () => {
                   type="submit"
                   className="w-full py-4 bg-[#388087] hover:bg-[#2a636b] text-white rounded-xl font-black text-xs tracking-widest uppercase shadow-md shadow-[#388087]/10 active:scale-[0.98] transition-all"
                 >
-                  {isEditMode ? "Simpan Pembaruan Aset" : "Daftarkan Barang Baru"}
+                  {isEditMode
+                    ? "Simpan Pembaruan Aset"
+                    : "Daftarkan Barang Baru"}
                 </button>
               </div>
             </form>
@@ -508,7 +522,10 @@ const DataBarang = () => {
             </div>
             <div className="bg-slate-50 border border-slate-100 p-6 rounded-2xl inline-block mx-auto shadow-inner mb-4">
               <img
-                src={`https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl=IGUDANG-BARANG-${qrItem.id_barang}-${qrItem.nama}`}
+                // 🔥 GANTI KE QRSERVER API
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                  `${qrItem.nama} tersedia (${qrItem.stok}) ${qrItem.satuan}`
+                )}`}
                 alt="QR Code Asset"
                 className="w-44 h-44 object-contain shadow-sm rounded-lg bg-white p-2"
               />
@@ -518,7 +535,8 @@ const DataBarang = () => {
                 {qrItem.nama}
               </h3>
               <p className="text-[10px] font-bold text-slate-400 tracking-widest">
-                RAK: {qrItem.nama_rak || qrItem.rak_id} • SKU: {qrItem.id_barang}
+                RAK: {qrItem.nama_rak || qrItem.rak_id} • SKU:{" "}
+                {qrItem.id_barang}
               </p>
             </div>
             <button

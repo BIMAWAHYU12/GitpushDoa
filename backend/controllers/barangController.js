@@ -2,7 +2,6 @@ const db = require("../config/db");
 const fs = require("fs");
 const path = require("path");
 
-// 1. Ambil Semua Barang + List Kategori & Rak Otomatis dari Database
 const getAllBarang = async (req, res) => {
     try {
         const queryBarang = `
@@ -15,12 +14,10 @@ const getAllBarang = async (req, res) => {
             ORDER BY b.id_barang DESC
         `;
 
-        // 🔥 AMBIL DATA SATU PER SATU AGAR STRUKTUR ARRAY-NYA BERSIH DAN BISA DIBACA REACT
         const [barangRows] = await db.query(queryBarang);
         const [kategoriRows] = await db.query("SELECT id_kategori, nama FROM kategori ORDER BY id_kategori ASC");
         const [rakRows] = await db.query("SELECT id_rak, nama_rak FROM rak ORDER BY id_rak ASC");
         
-        // Mapping URL gambar asset barang
         const finalBarangData = (barangRows || []).map(item => ({
             ...item,
             url_gambar: item.gambar 
@@ -28,7 +25,6 @@ const getAllBarang = async (req, res) => {
                 : `http://localhost:5000/uploads/default.png`
         }));
 
-        // Kirim response paket lengkap ke React
         res.json({
             status: "success",
             data: finalBarangData,
@@ -42,7 +38,6 @@ const getAllBarang = async (req, res) => {
     }
 };
 
-// 2. Tambah Barang (Sudah Sinkron Kolom Satuan)
 const createBarang = async (req, res) => {
     const { nama, kategori_id, rak_id, stok, satuan } = req.body;
     const gambar = req.file ? req.file.filename : null;
@@ -76,7 +71,6 @@ const createBarang = async (req, res) => {
     }
 };
 
-// 3. Update Barang (Sudah Sinkron Kolom Satuan)
 const updateBarang = async (req, res) => {
     const { id } = req.params;
     const { nama, kategori_id, rak_id, stok, satuan } = req.body; 
@@ -134,7 +128,6 @@ const updateBarang = async (req, res) => {
     }
 };
 
-// 4. Hapus Barang
 const deleteBarang = async (req, res) => {
     const { id } = req.params;
 

@@ -405,7 +405,6 @@ const Transaksi = () => {
               </div>
             </div>
 
-            <hr className="border-slate-100 border-dashed" />
 
             {/* AREA KERANJANG */}
             <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100/80">
@@ -489,7 +488,6 @@ const Transaksi = () => {
               )}
             </div>
 
-            <hr className="border-slate-100 border-dashed" />
 
             {/* FORM MASUK */}
             {formData.jenis_mutasi === 'Masuk' && (

@@ -21,7 +21,6 @@ exports.register = async (req, res) => {
             return res.status(400).json({ message: "Username sudah digunakan!" });
         }
 
-        // 🔥 Validasi role (biar ga bisa inject admin sembarangan)
         const allowedRoles = ['admin', 'staff'];
         const finalRole = allowedRoles.includes(role) ? role : 'staff';
 

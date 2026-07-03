@@ -3,7 +3,6 @@ const router = express.Router();
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
 const { getSupplier, createSupplier, updateSupplier, deleteSupplier } = require("../controllers/supplierController");
 
-// Jalur Eksklusif Master Supplier
 router.get("/", verifyToken, getSupplier);
 router.post("/", verifyToken, isAdmin, createSupplier);
 router.put("/:id", verifyToken, isAdmin, updateSupplier);

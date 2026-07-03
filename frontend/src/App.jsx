@@ -1,86 +1,130 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
-import Login from "./pages/Login"; 
-import Transaksi from "./pages/Transaksi"; 
-import Dashboard from "./pages/Dashboard";
 import Barang from "./pages/Barang";
+import Dashboard from "./pages/Dashboard";
+import DataOutlet from "./pages/DataOutlet";
+import Gudanginfo from "./pages/Gudanginfo";
+import Login from "./pages/Login";
 import Riwayat from "./pages/Riwayat";
-import DataOutlet from "./pages/DataOutlet"; 
-import TentangKami from "./pages/TentangKami"; 
-import Gudanginfo from "./pages/Gudanginfo"; 
-import UserManagement from "./pages/UserManagement"; 
-// 🔥 1. IMPORT HALAMAN TENTANG KAMI DI SINI Dhika
+import TentangKami from "./pages/TentangKami";
+import Transaksi from "./pages/Transaksi";
+import UserManagement from "./pages/UserManagement";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
-        
         <Route path="/login" element={<Login />} />
+
         
         {/* --- TRANSAKSI BARANG (Mutasi Stok) --- */}
-        <Route path="/transaksi" element={
-          <MainLayout>
-            <Transaksi />
-          </MainLayout>
-        } />
-      
+        <Route
+          path="/transaksi"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Transaksi />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
         {/* --- DASHBOARD SYSTEM --- */}
-        <Route path="/dashboard" element={
-          <MainLayout>
-            <Dashboard />
-          </MainLayout>
-        } />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
 
         {/* --- DATA MASTER: BARANG --- */}
-        <Route path="/barang" element={
-          <MainLayout>
-            <Barang />
-          </MainLayout>
-        } />
+        <Route
+          path="/barang"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Barang />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
 
         {/* --- DATA MASTER: OUTLET --- */}
-        <Route path="/outlet" element={
-          <MainLayout>
-            <DataOutlet />
-          </MainLayout>
-        } />
-        
+        <Route
+          path="/outlet"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <DataOutlet />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
         {/* --- LAPORAN / RIWAYAT --- */}
-        <Route path="/riwayat" element={
-          <MainLayout>
-            <Riwayat />
-          </MainLayout>
-        } />
+        <Route
+          path="/riwayat"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Riwayat />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
 
         {/* --- PROFILE DEVELOPER KELOMPOK --- */}
-        {/* 🔥 2. DAFTARKAN JALUR RUTENYA DI SINI */}
-        <Route path="/tentang-kami" element={
-          <MainLayout>
-            <TentangKami />
-          </MainLayout>
-        } />
+        <Route
+          path="/tentang-kami"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <TentangKami />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
 
-        {/* 🔥 2. DAFTARKAN JALUR RUTENYA DI SINI */}
-        <Route path="/gudanginfo" element={
-          <MainLayout>
-            <Gudanginfo />
-          </MainLayout>
-        } />
-        {/* 🔥 2. DAFTARKAN JALUR RUTENYA DI SINI */}
-        <Route path="/usermanagement" element={
-          <MainLayout>
-            <UserManagement />
-          </MainLayout>
-        } />
-      
+        {/* --- INFO GUDANG & SOP --- */}
+        <Route
+          path="/gudanginfo"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <Gudanginfo />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        {/* --- USER MANAGEMENT --- */}
+        <Route
+          path="/usermanagement"
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <UserManagement />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        />
+
+        {/* --- REDIRECTS --- */}
         {/* Redirect root (/) ke Login */}
         <Route path="/" element={<Navigate to="/login" />} />
-        
-        {/* Redirect alamat ngasal ke Dashboard */}
+
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
-      
     </Router>
   );
 }

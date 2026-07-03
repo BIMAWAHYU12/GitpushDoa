@@ -1,10 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-// ================= VERIFY TOKEN =================
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
 
-    // 🔥 validasi format Bearer
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(403).json({ message: "Token tidak ditemukan!" });
     }

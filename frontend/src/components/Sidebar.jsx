@@ -16,13 +16,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     const isActive = location.pathname === path;
     const base = "flex items-center px-5 py-3 rounded-xl font-bold text-[11px] tracking-widest transition-all duration-300 mb-1 mx-4 group relative overflow-hidden active:scale-[0.98]";
     
-    // 🔥 SINKRONISASI WARNA: Menu Aktif pake warna Cream (#F6F6F2) dengan teks Teal Tua (#388087)
     return isActive 
       ? `${base} bg-[#F6F6F2] text-[#388087] shadow-lg shadow-black/10 font-black scale-[1.01]` 
       : `${base} text-[#BADFE7]/60 hover:bg-white/10 hover:text-white`;
   };
 
-  // Helper merender ikon kotak minimalis premium agar menyatu dengan tema baru lu
   const renderMenuIcon = (path, iconName) => {
     const isActive = location.pathname === path;
     return (
@@ -40,15 +38,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      {/* OVERLAY MOBILE */}
       {isOpen && (
         <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[40] lg:hidden" onClick={toggleSidebar}></div>
       )}
 
-      {/* ─── SIDEBAR MAIN: Warna Hijau Teal Tua (#388087) Sesuai Referensi Gambar Lu ─── */}
       <div className={`fixed top-0 left-0 h-screen w-72 z-[50] bg-[#388087] border-r border-[#6FB3B8]/20 text-white flex flex-col transition-transform duration-500 shadow-2xl ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         
-        {/* ─── HEADER: BRANDING LOGO (CREAM ACCENT #F6F6F2) ─── */}
         <div className="px-8 py-8 flex items-center gap-3.5">
           <div className="w-10 h-10 bg-[#F6F6F2] rounded-xl flex items-center justify-center shadow-md shadow-black/5">
             <i className="fas fa-cubes text-[#388087] text-base"></i>
@@ -59,7 +54,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </div>
         </div>
 
-        {/* ─── NAVIGATION LIST (CLEAN SOFT INTERFACE) ─── */}
         <nav className="flex-1 px-1 mt-4 overflow-y-auto custom-scrollbar space-y-0.5">
           
           <Link to="/dashboard" className={menuClass('/dashboard')}>
@@ -67,7 +61,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <span>Dashboard Utama</span>
           </Link>
 
-          {/* MENU DATA UTAMA (Hanya Akun Admin) */}
             <>
               <div className="px-6 pt-5 pb-2 text-[9px] font-black text-[#BADFE7]/40 tracking-[0.2em] uppercase">Master Terminal</div>
               
@@ -82,7 +75,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               </Link>
             </>
 
-          {/* MENU LOGISTIK & PROFIL */}
           <div className="px-6 pt-5 pb-2 text-[9px] font-black text-[#BADFE7]/40 tracking-[0.2em] uppercase">Sirkulasi & Informasi</div>
 
           <Link to="/transaksi" className={menuClass('/transaksi')}>
@@ -113,11 +105,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           </Link>
         </nav>
 
-        {/* ─── FOOTER: EXECUTIVE PROFILE WITH CREAM MIX ACCENT ─── */}
         <div className="p-5 bg-black/10 border-t border-white/5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
-              {/* Avatar Cream Satin Mewah */}
               <div className="w-10 h-10 rounded-xl bg-[#F6F6F2] border border-[#BADFE7]/20 flex items-center justify-center font-black text-xs text-[#388087] shadow-inner uppercase flex-shrink-0">
                 {username.charAt(0)}
               </div>
@@ -127,7 +117,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
               </div>
             </div>
             
-            {/* Logout Icon Button Minimalis */}
             <button 
               onClick={handleLogout}
               className="w-9 h-9 flex items-center justify-center rounded-xl text-[#BADFE7]/70 hover:text-red-300 hover:bg-white/10 transition-all flex-shrink-0"

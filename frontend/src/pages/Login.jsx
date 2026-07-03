@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -9,9 +9,18 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Kalau sudah punya token, otomatis arahkan ke dashboard (bypass login)
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(''); // Reset error saat mulai login
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -21,10 +30,13 @@ const Login = () => {
       const result = await response.json();
       if (!response.ok) throw new Error(result.message || 'Login gagal!');
       
+      // Simpan kredensial ke localStorage
       localStorage.setItem('token', result.token);
       localStorage.setItem('username', result.user.username);
       localStorage.setItem('user_role', result.user.role);
-      navigate('/dashboard');
+      
+      // Arahkan ke dashboard dengan replace agar tidak bisa di-back ke halaman login
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
